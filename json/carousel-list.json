@@ -1,0 +1,39 @@
+[
+    {
+        "category": "similar",
+        "title": "나와 비슷한 사람들이 수강한 강의",
+        "clickableTitle": "false",
+        "jsonUrl": "/json/similar-class.json"
+    },
+    {
+        "category": "javascript",
+        "clickableTitle": "true",
+        "jsonUrl": "/json/javascript-class.json"
+    },
+    {
+        "category": "android",
+        "clickableTitle": "true",
+        "jsonUrl": "/json/similar-class.json"
+    },
+    {
+        "category": "more",
+        "title": "더 둘러보기",
+        "clickableTitle": "false",
+        "jsonUrl": "/json/similar-class.json"
+    },
+    {
+        "category": "new",
+        "title": "따끈따끈, 신규 강의를 만나보세요!🙋‍♀️",
+        "clickableTitle": "true",
+        "badge": "NEW!!",
+        "jsonUrl": "/json/new-class.json"
+    },
+    {
+        "category": "roadmap",
+        "title": "기본부터 실무까지 제시해주는 로드맵 🏃🏻‍♀️",
+        "clickableTitle": "true",
+        "badge": "RoadMap!!",
+        "jsonUrl": "/json/similar-class.json",
+        "description": "아무것도 몰라도 따라오다 보면 전문가가 될 수 있어요!"
+    }
+]

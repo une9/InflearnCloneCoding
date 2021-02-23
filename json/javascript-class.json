@@ -1,5 +1,18 @@
 [
     {
+        "title": "비전공자를 위한 진짜 올인원 개발 클래스",
+        "thumbnailUrl": "../src/b0536120-7de3-4aa8-8266-97cf3881e87d.jpg",
+        "tutor": "그램",
+        "ratingScore": "5",
+        "ratingCount": "7",
+        "price": "￦143,000",
+        "tags": ["+100명", "업데이트"],
+        "description": "입문자를 위해 준비한 [웹 개발, 모바일 앱 개발] 강의입니다. 왕초보도 할 수 있는 웹, 서버, 모바일 앱, 머신러닝까지 익히는 끝판왕 풀스택 강의입니다. 개발을 어디서부터 시작할지 막막했다면 이 강의를 강력 추천할게요. Javascript 하나로 진행합니다!",
+        "level": "입문",
+        "category": ["웹 개발", "모바일 앱 개발", "데이터 사이언스"],
+        "subclass": ["javascript", "React", "Node.js"]
+    },
+    {
         "title": "프로그래밍 시작하기: 웹 입문 (Inflearn Original)",
         "thumbnailUrl": "../src/inflearn-original-web-ef.png",
         "tutor": "인프런",
@@ -9,7 +22,7 @@
         "tags": ["+500명"],
         "description": "처음으로 프로그래밍을 시작하는 분들을 위한 웹 개발 입문 강의입니다. HTML, CSS, Javascript를 배우고 인스타그램 포스팅 카드를 만들어봄으로써 웹페이지 제작에 꼭 필요한 기본적인 내용들을 학습합니다.",
         "level": "입문",
-        "category": ["웹 개발"],
+        "category":["웹 개발"],
         "subclass": ["HTML/CSS", "javascript", "웹 개발"]
     },
     {
@@ -19,20 +32,7 @@
         "ratingScore": "4.5",
         "ratingCount": "22",
         "price": "￦55,000",
-        "tags": ["+700명", "새강의"],
-        "description": "처음으로 프로그래밍을 시작하는 분들을 위한 웹 개발 입문 강의입니다. HTML, CSS, Javascript를 배우고 인스타그램 포스팅 카드를 만들어봄으로써 웹페이지 제작에 꼭 필요한 기본적인 내용들을 학습합니다.",
-        "level": "입문",
-        "category": ["웹 개발"],
-        "subclass": ["HTML/CSS", "javascript", "웹 개발"]
-    },
-    {
-        "title": "프로그래밍 시작하기: 웹 입문 (Inflearn Original)",
-        "thumbnailUrl": "../src/2ec65ea9-9e63-4931-94b2-f6ff9fd9280c.png",
-        "tutor": "인프런",
-        "ratingScore": "4.5",
-        "ratingCount": "22",
-        "price": "￦55,000",
-        "tags": ["+1000명", "할인중"],
+        "tags": ["+500명"],
         "description": "처음으로 프로그래밍을 시작하는 분들을 위한 웹 개발 입문 강의입니다. HTML, CSS, Javascript를 배우고 인스타그램 포스팅 카드를 만들어봄으로써 웹페이지 제작에 꼭 필요한 기본적인 내용들을 학습합니다.",
         "level": "입문",
         "category": ["웹 개발"],

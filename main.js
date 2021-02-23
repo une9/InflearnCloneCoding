@@ -46,9 +46,7 @@ class MainSlider {
     slideContentBox(index) {
         const paginationButtonContent = document.getElementById('pagination-button-content');
         const paginationButtonContentHalfWidth = paginationButtonContent.offsetWidth / 2;
-        const paginationButtonContentLeft = paginationButtonContent.getBoundingClientRect().x;
-        const paginationButtonContentRight = paginationButtonContent.getBoundingClientRect().right;
-
+        
         const ContentboxLeft = paginationButtonContent.getBoundingClientRect().x;
         const ContentboxRight = paginationButtonContent.getBoundingClientRect().right;
 
@@ -58,13 +56,17 @@ class MainSlider {
 
         const buttonOffsetHalfWidth = button.offsetWidth / 2;
         const buttonOffsetRight = button.offsetLeft + button.offsetWidth;
+        const buttonOffsetLeft = button.offsetLeft;
         
         if (buttonLeft < ContentboxLeft) {
             paginationButtonContent.scrollTo({left: 0, behavior: "smooth"});
+            this.gradientLeft.style.display = 'none';
+            this.gradientRight.style.display = 'block';
         } else if (buttonRight > ContentboxRight - 24) {
-            paginationButtonContent.scrollTo({left: buttonOffsetRight - paginationButtonContentHalfWidth + buttonOffsetHalfWidth, behavior: "smooth"});
+            paginationButtonContent.scrollTo({left: buttonOffsetLeft, behavior: "smooth"});
+            this.gradientLeft.style.display = 'block';
+            this.gradientRight.style.display = 'none';
         }
-
     }
 
     deselect() {
@@ -134,6 +136,57 @@ class MainSlider {
     }
 }
 
+class CarouselSection {
+    constructor (obj) {
+        this.category = obj.category;
+        this.clickableTitle = obj.clickableTitle === 'true' ? true : false;
+        this.url = obj.jsonUrl;
+        this.badge = obj.badge ? obj.badge : '';
+        this.description = obj.description ? obj.description : '';
+
+        if (obj.title) {
+            this.title = obj.title;
+        } else {
+            this.title = `내가 학습한 <span>${this.category[0].toUpperCase() + this.category.slice(1).toLowerCase()}</span> 분야 인기 강의`
+        }
+
+        if (this.clickableTitle) {
+            this.title = `<a href="">${this.title}${this.badge ? '<span class="badge">' + this.badge + '</span>': ''}<i class="lnr lnr-chevron-right"></i></a>`
+        }
+
+        this.carouselSections = document.querySelectorAll('section.carousel');
+        for (let section of this.carouselSections) {
+            const id = section.getAttribute('id');
+            if (this.category === id) {
+                this.section = section;
+                break;
+            }
+        }
+
+        this.sectionString = `
+            <div class="container">
+                <h2>${this.title}</h2>
+                <div class="carousel-container"> <!--고정값-->
+                    <button class="carousel-left-button carousel-button" disabled="true">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="carousel-right-button carousel-button">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <div class="carousel-slide-pages"> <!--콘텐츠 길이만큼-->
+                        
+                    </div>
+                </div>
+            </div>`
+
+        this.section.innerHTML = this.sectionString;
+
+        this.carouselSlidePages = document.querySelector(`#${this.category}.carousel-slide-pages`);
+
+        new Carousel(this.section, this.url);
+    }
+}
+
 
 
 class Carousel {
@@ -153,25 +206,73 @@ class Carousel {
         this.src = src;
 
         this.cards = this.createCards(this.src);
-        this.createContainers(this.decideDisplayCardNum());
 
-        this.contentCardContainers = this.elem.getElementsByClassName('content-card-container');
-
-        console.log(this.elem);
-        console.log(this.container);
-
-        this.decideCardContainerWidth();
+        this.relatedToWindowSize();
 
         this.leftButton.addEventListener('click', () => this.moveTo(this.currentPage - 1));
         this.rightButton.addEventListener('click', () => this.moveTo(this.currentPage + 1));
 
     }
 
-    createStarScore(score) {
-        const starString = '<i class="fas fa-star full"></i>'.repeat(Math.floor(Number(score)))
-                            + '<i class="fas fa-star half"></i>'.repeat(/.5$/.test(score) ? 1 : 0)
-                            + '<i class="fas fa-star"></i>'.repeat(5 - Math.ceil(Number(score)));
-        return starString;
+    relatedToWindowSize() {
+        this.createContainers(this.decideDisplayCardNum());
+
+        this.contentCardContainers = this.elem.getElementsByClassName('content-card-container');
+
+        this.decideCardContainerWidth();
+    }
+
+    createStarScore(obj) {
+        let starHTMLString = '';
+        const score = obj.ratingScore;
+
+        if (obj.ratingScore && obj.ratingCount) {
+            const starString = '<i class="fas fa-star full"></i>'.repeat(Math.floor(Number(score)))
+                                + '<i class="fas fa-star half"></i>'.repeat(/.5$/.test(score) ? 1 : 0)
+                                + '<i class="fas fa-star"></i>'.repeat(5 - Math.ceil(Number(score)));
+            
+            starHTMLString = `
+                        <div class="card-score">
+                            <span class="star-rating">
+                                ${starString}
+                            </span>
+                            <span>(${obj.ratingCount})</span>
+                        </div>`;
+        } 
+
+        return starHTMLString;
+    }
+
+    createPrice(obj) {
+        let priceString = '';
+
+        const price = obj.price;
+        const discountPrice = obj.discountPrice ? obj.discountPrice : '';
+
+        if (discountPrice) {
+            priceString = `<div class="card-price">
+                                <span class="origin-price">${price}</span>
+                                <span class="discounted-price">${discountPrice}</span>
+                            </div>`;
+        } else {
+            priceString = `<div class="card-price"><span class="regular-price">${price}</span></div>`;
+        }
+
+        return priceString;
+    }
+
+    createTags(tags) {
+        const newTags = [];
+        for (let tag of tags) {
+            if (/\d+/.test(tag)) {
+                newTags.push('<div class="card-tag price">' + tag + '</div>');
+            } else if (tag === '업데이트' || tag === '새강의') {
+                newTags.push('<div class="card-tag update">' + tag + '</div>');
+            } else if (tag === '할인중') {
+                newTags.push('<div class="card-tag discount">' + tag + '</div>');
+            }
+        }
+        return newTags.join('')
     }
 
     createCards(src) {
@@ -180,21 +281,43 @@ class Carousel {
         for (let obj of src) {
             const cardString = `
             <div class="content-card">
-                <img src="${obj.thumbnailUrl}" alt="">
+                <div class="thumb-wrapper">
+                    <img src="${obj.thumbnailUrl}" alt="">
+                </div>
                 <div class="content-info">
                     <div class="card-title">
                         ${obj.title}
                     </div>
                     <div class="card-tutor">${obj.tutor}</div>
-                    <div class="card-score">
-                        <span class="star-rating">
-                            ${this.createStarScore(obj.ratingScore)}
-                        </span>
-                        <span>(${obj.ratingCount})</span>
-                    </div>
-                    <div class="card-price">${obj.price}</div>
-                    <div class="card-learners">${obj.learners}</div>
+                    ${this.createStarScore(obj)}
+                    ${this.createPrice(obj)}
+                    <div class="card-tags">${this.createTags(obj.tags)}</div>
                 </div>
+                <a href="">
+                    <div class="hover-div">
+                    <div class="hover-title">
+                        ${obj.title}
+                    </div>
+                    <div class="card-description">
+                        ${obj.description}
+                    </div>
+                    <div class="hover-bottom">
+                        <div class="hover-info">
+                            <div class="level"><i class="fas fa-signal"></i>${obj.level}</div>
+                            <div class="category"><i class="lnr lnr-database"></i>${obj.category.join(', ')}</div>
+                            <div class="subclass">
+                                <i class="lnr lnr-pie-chart"></i>
+                                ${obj.subclass.join(', ')}
+                            </div>
+                        </div>
+                        <div class="hover-icons">
+                            <div><a href=""><i class="lnr lnr-cart"></i></a><div class="icon-hover-text">바구니에 추가하기</div></div>
+                            <div><a href=""><i class="lnr lnr-heart"></i></a><div class="icon-hover-text">위시리스트에 추가하기</div></div>
+                            <div><a href=""><i class="lnr lnr-plus-circle"></i></a><div class="icon-hover-text">내 목록에 추가하기</div></div>
+                        </div>
+                    </div>
+                    </div>
+                </a>
             </div>`
 
             cards.push(cardString);
@@ -207,28 +330,27 @@ class Carousel {
         const leng = this.src.length;
         let num;
 
-
-
         if (window.innerWidth > 1240) {
             num = 5;
-        } else if (window.innerWidth > 1080) {
+        } else if (window.innerWidth > 840) {
             num = 4;
-        } else if (window.innerWidth > 618) {
-            num = 3;
         } else {
-            num = leng;
+            num = 3;
         }
 
         const repeat = leng / num;
         const remainder = leng % num;
 
         this.num = num;
-
-        return [num, repeat, remainder];
+        this.repeat = repeat;
+        this.remainder = remainder;
     }
 
-    createContainers([num, repeat, remainder]) {
+    createContainers() {
+        const num = this.num;
+        const repeat = this.repeat;
         const cards = this.cards;
+
         const containers = [];
 
         for (let i = 0; i < repeat * num; i += num) {
@@ -244,16 +366,18 @@ class Carousel {
     }
 
     decideCardContainerWidth() {
-        const defaultWidth = this.container.offsetWidth;
+        const defaultWidth = this.container.offsetWidth - 40;
 
         for (let i = 0; i < this.contentCardContainers.length; i++) {
-            if (i === this.contentCardContainers.length - 1) {
-                const childElementCount = this.contentCardContainers[i].childElementCount;
-                const lastPageWidth = (defaultWidth - this.gridGap * (this.num - 1)) / this.num * childElementCount + this.gridGap * (childElementCount - 1);
-                this.contentCardContainers[i].style.width = `calc(${lastPageWidth}px - 2rem)`;
-                this.contentCardContainers[i].style.gridTemplateColumns = `repeat(${childElementCount}, 1fr)`;
+            if (i === this.contentCardContainers.length - 1 && this.remainder !== 0) {
+                const aCardWidth = (defaultWidth - this.gridGap * (this.num - 1)) / this.num;
+                const lastPageWidth = aCardWidth * this.remainder + this.gridGap * (this.remainder - 1);
+                console.log(aCardWidth, lastPageWidth);
+                this.contentCardContainers[i].style.width = `${lastPageWidth}px`;
+                this.contentCardContainers[i].style.gridTemplateColumns = `repeat(${this.remainder}, 1fr)`;
             } else {
-                this.contentCardContainers[i].style.width = `calc(${defaultWidth}px - 2rem)`;
+                this.contentCardContainers[i].style.width = `${defaultWidth}px`;
+                this.contentCardContainers[i].style.gridTemplateColumns = `repeat(${this.num}, 1fr)`;
             }
         }
     }
@@ -264,7 +388,9 @@ class Carousel {
 
         if (this.currentPage === 0) {
             this.leftButton.disabled = true;
+            this.rightButton.disabled = false;
         } else if (this.currentPage === this.contentCardContainers.length - 1) {
+            this.leftButton.disabled = false;
             this.rightButton.disabled = true;
         } else {
             this.leftButton.disabled = false;
@@ -428,7 +554,6 @@ function searchInfoBlur(e) {
 
 
 function bottomSlideMove(tI) {
-    console.log(tI);
 
     const bottomSlidePaginationButtons = document.getElementsByClassName('bottom-slide-pagination-button');
     for (let button of bottomSlidePaginationButtons) {
@@ -469,8 +594,6 @@ let bottomCurrentI = 0;
 
 
 async function main() {
-
-    console.log(new Date());
 
     const cartLables = document.getElementsByName('cart');
     for (let label of cartLables) {
@@ -570,11 +693,27 @@ async function main() {
 
 
 
-    // similar classes
 
-    // const similarClassSrc = await getSrc('/json/similar-class.json');
-    const similarSection = document.getElementById('similar');
-    const similarSlider = new Carousel(similarSection, '/json/similar-class.json');
+
+
+    const carouselSectionSrc = await getSrc('/json/carousel-list.json');
+    const carouselSections = [];
+    for (let obj of carouselSectionSrc) {
+        const newSection = new CarouselSection(obj);
+        carouselSections.push(newSection);
+        console.log(carouselSections);
+    }
+
+
+
+
+    // window.addEventListener('resize', () => {
+    //     for (let section of carouselSections) {
+    //         console.log(section);
+    //         section.relatedToWindowSize();
+    //     }
+    // });
+    
 
 }
 
