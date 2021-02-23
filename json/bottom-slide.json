@@ -1,0 +1,26 @@
+[
+    {
+        "title": "지식을 나눠주세요.<br>쉽게 시작하고 합당한 보상을 받을 수 있어요.",
+        "buttonContent": "지식공유 알아보기",
+        "imgUrl": "../src/bottom-slide/share-you.jpg",
+        "color": "#333"
+    },
+    {
+        "title": "모든 팀원이 인프런의 강의들을<br>자유롭게 학습하는 환경을 제공해주세요.",
+        "buttonContent": "비즈니스 알아보기",
+        "imgUrl": "../src/bottom-slide/bottom-1920-205-(1111).jpg",
+        "color": "#333"
+    },
+    {
+        "title": "저와 비슷한 사람 많을 거라고 생각했어요<br>인프런의 탄생 비하인드 스토리가 궁금하신가요?",
+        "buttonContent": "인프런 탄생 스토리",
+        "imgUrl": "../src/bottom-slide/bottom_inflearn_story.jpg",
+        "color": "white"
+    },
+    {
+        "title": "당신은 더 좋은 곳에 갈 수 있어요.<br>지금 열려있는 채용공고를 확인해보세요.",
+        "buttonContent": "공고 확인하기",
+        "imgUrl": "../src/bottom-slide/bottom-1920-205-(221).jpg",
+        "color": "white"
+    }
+]
