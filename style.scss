@@ -69,18 +69,29 @@ body {
 header {
     width: 100%;
     height: $header-height;
-}
 
-header nav {
-    height: $header-height;
-    width: 100%;
-    padding: 0 $padding-side;
-    display: flex;
-    align-items: center;
     position: fixed;
     background: white;
     z-index: 100;
     box-shadow: 0 2px 4px 0 hsl(0deg 0% 81% / 50%);
+
+    display: flex;
+    justify-content: center;
+    
+}
+
+header nav {
+    max-width: 1024px;
+    // margin: 0 auto;
+    padding: 0 1rem;
+
+    height: $header-height;
+    width: 100%;
+    // padding: 0 $padding-side;
+    display: flex;
+    align-items: center;
+    
+    position: relative;
 
     #logo {
         display: inline-block;
@@ -129,9 +140,11 @@ header nav {
         padding: 0;
     }
 
-    // div:hover > span {
-    //     color: $main-color;
-    // }
+    #nav-bar-class:hover > span,
+    #nav-bar-community:hover > span,
+    .menuA:hover {
+        color: $main-color;
+    }
 
     svg {
         width: 1rem;
@@ -215,23 +228,23 @@ header nav {
 }
 
 #nav-bar-alarm {
-    background: url('/src/icon/lnr-alarm.svg') no-repeat center;
+    background: url('src/icon/lnr-alarm.svg') no-repeat center;
 }
 
 #nav-bar-alarm:hover {
     width: 1.25rem;
     height: 1.25rem;
-    background: url('/src/icon/lnr-alarm-fill.svg') no-repeat center / auto;
+    background: url('src/icon/lnr-alarm-fill.svg') no-repeat center / auto;
 }
 
 #nav-bar-cart {
-    background: url('/src/icon/lnr-cart.svg') no-repeat center;
+    background: url('src/icon/lnr-cart.svg') no-repeat center;
 }
 
 #nav-bar-cart:hover {
     width: 1.25rem;
     height: 1.25rem;
-    background: url('/src/icon/lnr-cart-fill.svg') no-repeat center / auto;
+    background: url('src/icon/lnr-cart-fill.svg') no-repeat center / auto;
 }
 
 #nav-bar-class, 
@@ -578,7 +591,7 @@ div#user-profile {
 }
 
 div#profile-pic {
-    background: url(/src/default_profile.png) no-repeat center / cover;
+    background: url(src/default_profile.png) no-repeat center / cover;
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
@@ -609,6 +622,10 @@ div#user-name {
         padding: 0;
         height: inherit;
         display: inline-block;
+    }
+
+    a:hover {
+        background: inherit;
     }
 
     i {
@@ -738,7 +755,7 @@ div#user-info-bar {
 
 
 
-#main {
+main {
     padding-top: $header-height;
 }
 

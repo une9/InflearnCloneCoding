@@ -38,18 +38,22 @@ body {
 header {
   width: 100%;
   height: 64px;
-}
-
-header nav {
-  height: 64px;
-  width: 100%;
-  padding: 0 10px;
-  display: flex;
-  align-items: center;
   position: fixed;
   background: white;
   z-index: 100;
   box-shadow: 0 2px 4px 0 rgba(207, 207, 207, 0.5);
+  display: flex;
+  justify-content: center;
+}
+
+header nav {
+  max-width: 1024px;
+  padding: 0 1rem;
+  height: 64px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 header nav #logo {
   display: inline-block;
@@ -92,6 +96,11 @@ header nav #logo {
 }
 #nav-bar-menu div > span {
   padding: 0;
+}
+#nav-bar-menu #nav-bar-class:hover > span,
+#nav-bar-menu #nav-bar-community:hover > span,
+#nav-bar-menu .menuA:hover {
+  color: #1dc078;
 }
 #nav-bar-menu svg {
   width: 1rem;
@@ -162,23 +171,23 @@ header nav #logo {
 }
 
 #nav-bar-alarm {
-  background: url("/src/icon/lnr-alarm.svg") no-repeat center;
+  background: url("src/icon/lnr-alarm.svg") no-repeat center;
 }
 
 #nav-bar-alarm:hover {
   width: 1.25rem;
   height: 1.25rem;
-  background: url("/src/icon/lnr-alarm-fill.svg") no-repeat center/auto;
+  background: url("src/icon/lnr-alarm-fill.svg") no-repeat center/auto;
 }
 
 #nav-bar-cart {
-  background: url("/src/icon/lnr-cart.svg") no-repeat center;
+  background: url("src/icon/lnr-cart.svg") no-repeat center;
 }
 
 #nav-bar-cart:hover {
   width: 1.25rem;
   height: 1.25rem;
-  background: url("/src/icon/lnr-cart-fill.svg") no-repeat center/auto;
+  background: url("src/icon/lnr-cart-fill.svg") no-repeat center/auto;
 }
 
 #nav-bar-class,
@@ -502,7 +511,7 @@ div#user-profile {
 }
 
 div#profile-pic {
-  background: url(/src/default_profile.png) no-repeat center/cover;
+  background: url(src/default_profile.png) no-repeat center/cover;
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
@@ -532,6 +541,9 @@ div#user-name a {
   padding: 0;
   height: inherit;
   display: inline-block;
+}
+div#user-name a:hover {
+  background: inherit;
 }
 div#user-name i {
   font-size: 0.75rem;
@@ -642,7 +654,7 @@ div#user-info-bar a:hover {
   background: white;
 }
 
-#main {
+main {
   padding-top: 64px;
 }
 

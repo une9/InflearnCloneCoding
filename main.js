@@ -608,7 +608,7 @@ async function main() {
 
     // Main Slider
 
-    const mainSlideSrc = await getSrc('/json/main-slide-show.json');
+    const mainSlideSrc = await getSrc('json/main-slide-show.json');
     const mainSlideShowE = document.getElementById('main-slide-show');
     mainSlideShowE.innerHTML = createMainSlide(mainSlideSrc);
 
@@ -664,7 +664,7 @@ async function main() {
 
 
     const inputTitle = document.getElementById('input-title');
-    const inputTitleContent = await getSrc('/json/input-title.json');
+    const inputTitleContent = await getSrc('json/input-title.json');
     const randomNum = Math.floor(inputTitleContent.length * Math.random());
     inputTitle.textContent = inputTitleContent[randomNum];
 
@@ -678,7 +678,7 @@ async function main() {
     // bottom slide
 
     const bottomSlideE = document.getElementById('bottom-slide-banner-container');
-    const bottomSlideSrc = await getSrc('/json/bottom-slide.json');
+    const bottomSlideSrc = await getSrc('json/bottom-slide.json');
     bottomSlideE.innerHTML = createBottomSlide(bottomSlideSrc);
 
     const bottomSlidePaginationButtons = document.getElementsByClassName('bottom-slide-pagination-button');
@@ -696,7 +696,7 @@ async function main() {
 
 
 
-    const carouselSectionSrc = await getSrc('/json/carousel-list.json');
+    const carouselSectionSrc = await getSrc('json/carousel-list.json');
     const carouselSections = [];
     for (let obj of carouselSectionSrc) {
         const newSection = new CarouselSection(obj);
