@@ -656,25 +656,27 @@ function mediaqueryFunc() {
     const userIcon = document.getElementById('user-info-wrapper');
     const userDropMenu = document.getElementById('user-drop-menu');
 
+    const body = document.getElementsByTagName('body')[0];
     const black = document.getElementById('black');
 
-    if (mediumWindow.matches) {
-        mobileMenuIcon.addEventListener('click', () => {
-            if (!mobileMenuWrapper.classList.contains('show')) {
-                mobileMenuWrapper.classList.add('show');
-                black.classList.add('show');
-            }
-        })
 
-        userIcon.addEventListener('click', () => {
-            if (!userDropMenu.classList.contains('show')) {
-                userDropMenu.classList.add('show');
-                black.classList.add('show');
-                black.style.left = '0';
-                black.style.width = 'calc(100% - 316px)';
-            }
-        })
-    }
+    mobileMenuIcon.addEventListener('click', () => {
+        if (!mobileMenuWrapper.classList.contains('show') && mediumWindow.matches) {
+            mobileMenuWrapper.classList.add('show');
+            // black.classList.add('show');
+            body.style.height = '100vh';
+            body.style.overflow = 'hidden';
+        }
+    })
+
+    userIcon.addEventListener('click', () => {
+        if (!userDropMenu.classList.contains('show') && mediumWindow.matches) {
+            userDropMenu.classList.add('show');
+            // black.classList.add('show');
+            // black.style.left = '0';
+            // black.style.width = 'calc(100% - 316px)';
+        }
+    })
     
     if (smallWindow.matches) {
 
@@ -683,9 +685,10 @@ function mediaqueryFunc() {
     black.addEventListener('click', () => {
         mobileMenuWrapper.classList.remove('show');
         userDropMenu.classList.remove('show');
-        black.classList.remove('show');
+        // black.classList.remove('show');
         
-        black.removeAttribute('style');
+        // black.removeAttribute('style');
+        body.removeAttribute('style');
     })
 }
 
