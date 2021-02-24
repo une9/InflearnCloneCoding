@@ -646,6 +646,49 @@ function searchInfoBlur(e) {
     input.classList.remove('on');
 }
 
+function mediaqueryFunc() {
+    const mediumWindow = matchMedia("screen and (max-width: 1024px)");
+    const smallWindow = matchMedia("screen and (max-width: 768px)");
+
+    const mobileMenuIcon = document.getElementById('mobile-menu-icon');
+    const mobileMenuWrapper = document.getElementById('mobile-menu-wrapper');
+
+    const userIcon = document.getElementById('user-info-wrapper');
+    const userDropMenu = document.getElementById('user-drop-menu');
+
+    const black = document.getElementById('black');
+
+    if (mediumWindow.matches) {
+        mobileMenuIcon.addEventListener('click', () => {
+            if (!mobileMenuWrapper.classList.contains('show')) {
+                mobileMenuWrapper.classList.add('show');
+                black.classList.add('show');
+            }
+        })
+
+        userIcon.addEventListener('click', () => {
+            if (!userDropMenu.classList.contains('show')) {
+                userDropMenu.classList.add('show');
+                black.classList.add('show');
+                black.style.left = '0';
+                black.style.width = 'calc(100% - 316px)';
+            }
+        })
+    }
+    
+    if (smallWindow.matches) {
+
+    }
+
+    black.addEventListener('click', () => {
+        mobileMenuWrapper.classList.remove('show');
+        userDropMenu.classList.remove('show');
+        black.classList.remove('show');
+        
+        black.removeAttribute('style');
+    })
+}
+
 
 async function main() {
 
@@ -656,6 +699,12 @@ async function main() {
 
     const userInfoMoreButton = document.getElementById('user-info-list-more-button');
     userInfoMoreButton.addEventListener('click', userInfoMoreHandler);
+
+
+    // media query
+
+    mediaqueryFunc();
+    
 
 
     // Main Slider    
@@ -690,11 +739,14 @@ async function main() {
     }
 
     window.addEventListener('resize', () => {
+
         for (let section of carouselSections) {
             section.relatedToWindowSize();
         }
+
+        mediaqueryFunc()
     });
-    
+
 }
 
 main();
