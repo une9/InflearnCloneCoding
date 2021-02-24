@@ -1,14 +1,42 @@
 class MainSlider {
-    constructor(slider, paginationButtons1, paginationButtons2, wrappers, pageNow, pauseButton, playButton) {
-        this.slider = slider;
-        this.paginationButtons1 = paginationButtons1;
-        this.paginationButtons2 = paginationButtons2;
-        this.wrappers = wrappers;
-        this.pageNow = pageNow;
-        this.pauseButton = pauseButton;
-        this.playButton = playButton;
 
+    constructor() {
+        this.mainSlideShowE = document.getElementById('main-slide-show');
+        getSrc('json/main-slide-show.json').then(mainSlideSrc => this.init(mainSlideSrc));
+    }
+
+    init(mainSlideSrc) {
+        this.mainSlideShowE.innerHTML = this.createMainSlide(mainSlideSrc);
+
+        this.paginationButtonE = document.getElementById('pagination-button-content');
+        this.paginationButtonE.innerHTML = this.createPaginationButton(mainSlideSrc);
+
+        this.paginationDropMenuE = document.getElementById('pagination-drop-menu-bottom');
+        this.paginationDropMenuE.innerHTML = this.createPaginationButton(mainSlideSrc);
+
+        this.paginationDropButton = document.getElementById('pagination-drop-button');
+        this.paginationDropCloseButton = document.querySelector('#pagination-drop-menu-top span:last-child');
+
+        this.slider = document.getElementById('main-slide-show');
+        this.paginationButtons1 = document.querySelectorAll('#pagination-button-content .pagination-button');
+        this.paginationButtons2 = document.querySelectorAll('#pagination-drop-menu-bottom .pagination-button');
+        this.wrappers = document.getElementsByClassName('main-slide-banner-wrapper');
+        this.pageNow = document.getElementById('page-now');
+        this.pauseButton =  document.getElementsByClassName('fas fa-pause')[0];
+        this.playButton =  document.getElementsByClassName('fas fa-play')[0];
         [this.gradientLeft, this.gradientRight] = document.getElementsByClassName('pagination-gradient');
+        this.allPages = document.getElementById('allpages');
+        
+        this.defaultSetting();
+        
+        this.eventlisteners();
+    }
+
+    defaultSetting() {
+        this.slider.scrollTo(this.wrappers[1].offsetLeft, 0);
+        this.paginationButtons2[0].classList.add('show');
+        this.paginationButtons1[0].classList.add('show');
+        this.allPages.textContent = this.paginationButtons1.length;
 
         this.length = this.wrappers.length - 2;
         this.frontPadIndex = 0;
@@ -20,6 +48,84 @@ class MainSlider {
 
         this.playing = true;
         this.timer = setInterval(() => this.slideNext(), this.slideInterval);
+         
+        this.slideLeftButton = document.getElementById('slide-left-button');
+        this.slideRightButton = document.getElementById('slide-right-button');
+    }
+
+    createPaginationButton(list) {
+        list = list.map(item => `<div class="pagination-button" data-index="${item.index}">${item.keyword}</div>`);
+        return list.join('');
+    }
+    
+    paginationDropToggle(e) {
+        const button = this.paginationDropButton;
+        if (!button.classList.contains('open')) {
+            button.classList.add('open');
+        } else {
+            button.classList.remove('open');
+        }
+    }
+    
+    closePaginationDrop() {
+        if (this.paginationDropButton.classList.contains('open')) {
+            this.paginationDropButton.classList.remove('open');
+        }
+    }
+
+    eventlisteners() {
+        this.paginationDropButton.addEventListener('click', () => this.paginationDropToggle());
+        this.paginationDropCloseButton.addEventListener('click', () => this.closePaginationDrop());
+
+        this.slideLeftButton.addEventListener('click', () => this.slidePrev());
+        this.slideRightButton.addEventListener('click', () => this.slideNext());
+        this.pauseButton.addEventListener('click', () => this.pauseToggle());
+        this.playButton.addEventListener('click', () => this.pauseToggle());
+
+        for (let button of [...this.paginationButtons1, ...this.paginationButtons2]) {
+            button.addEventListener('click', () => this.slideTo(Number(button.dataset.index)));
+        }
+    }
+
+
+
+    createMainSlide(list) {
+        const temp = [];
+        let firstResult;
+        let lastResult;
+    
+        for (let i = 0; i < list.length; i++) {
+            const item = list[i];
+    
+            const tags = item.tags.map(tag => `<span class="main-slide-tag" style="background: ${item.tagBackground}; color: ${item.tagFontColor}">${tag}</span>`).join('');
+    
+            const result = `
+                <div class="main-slide-banner-wrapper w${item.index}" style="background:${item.color}">
+                    <div class="main-slide-banner">
+                        <div class="main-slide-words" style="color: ${item.fontColor}">
+                            <div class="main-slide-tag-wrapper">
+                                ${tags}
+                            </div>
+                            <div class="main-slide-title">
+                                ${item.title}
+                            </div>
+                            <div class="main-slide-description">
+                                ${item.description}
+                            </div>
+                        </div>
+                        <img src="${item.imgurl}" class="main-slide-image"></img>
+                    </div>
+                </div>`;
+            if (i === 0) {
+                firstResult = result;
+            } else if (i === list.length - 1) {
+                lastResult = result;
+            }
+            temp.push(result);
+        }
+        temp.unshift(lastResult);
+        temp.push(firstResult);
+        return temp.join('');
     }
 
     resetTimer() {
@@ -136,6 +242,7 @@ class MainSlider {
     }
 }
 
+
 class CarouselSection {
     constructor (obj) {
         this.category = obj.category;
@@ -163,6 +270,38 @@ class CarouselSection {
             }
         }
 
+        this.createSection();
+
+        this.container = this.section.getElementsByClassName('container')[0];
+        this.elem = this.section.getElementsByClassName('carousel-slide-pages')[0];
+        this.leftButton = this.section.getElementsByClassName('carousel-left-button')[0];
+        this.rightButton = this.section.getElementsByClassName('carousel-right-button')[0];
+        this.gridGap = 8;
+        this.currentPage = 0;
+
+        getSrc(this.url).then(src => this.init(src));
+    }
+    
+    init(src) {
+        this.src = src;
+
+        this.cards = this.createCards(this.src);
+
+        this.relatedToWindowSize();
+
+        this.leftButton.addEventListener('click', () => this.moveTo(this.currentPage - 1));
+        this.rightButton.addEventListener('click', () => this.moveTo(this.currentPage + 1));
+    }
+
+    relatedToWindowSize() {
+        this.createContainers(this.decideDisplayCardNum());
+
+        this.contentCardContainers = this.elem.getElementsByClassName('content-card-container');
+
+        this.decideCardContainerWidth();
+    }
+
+    createSection() {
         this.sectionString = `
             <div class="container">
                 <h2>${this.title}</h2>
@@ -182,44 +321,6 @@ class CarouselSection {
         this.section.innerHTML = this.sectionString;
 
         this.carouselSlidePages = document.querySelector(`#${this.category}.carousel-slide-pages`);
-
-        new Carousel(this.section, this.url);
-    }
-}
-
-
-
-class Carousel {
-    constructor (section, url) {
-        this.section = section;
-        this.container = this.section.getElementsByClassName('container')[0];
-        this.elem = this.section.getElementsByClassName('carousel-slide-pages')[0];
-        this.leftButton = this.section.getElementsByClassName('carousel-left-button')[0];
-        this.rightButton = this.section.getElementsByClassName('carousel-right-button')[0];
-        this.gridGap = 8;
-        this.currentPage = 0;
-
-        getSrc(url).then(src => this.init(src));
-    }
-    
-    init(src) {
-        this.src = src;
-
-        this.cards = this.createCards(this.src);
-
-        this.relatedToWindowSize();
-
-        this.leftButton.addEventListener('click', () => this.moveTo(this.currentPage - 1));
-        this.rightButton.addEventListener('click', () => this.moveTo(this.currentPage + 1));
-
-    }
-
-    relatedToWindowSize() {
-        this.createContainers(this.decideDisplayCardNum());
-
-        this.contentCardContainers = this.elem.getElementsByClassName('content-card-container');
-
-        this.decideCardContainerWidth();
     }
 
     createStarScore(obj) {
@@ -372,7 +473,6 @@ class Carousel {
             if (i === this.contentCardContainers.length - 1 && this.remainder !== 0) {
                 const aCardWidth = (defaultWidth - this.gridGap * (this.num - 1)) / this.num;
                 const lastPageWidth = aCardWidth * this.remainder + this.gridGap * (this.remainder - 1);
-                console.log(aCardWidth, lastPageWidth);
                 this.contentCardContainers[i].style.width = `${lastPageWidth}px`;
                 this.contentCardContainers[i].style.gridTemplateColumns = `repeat(${this.remainder}, 1fr)`;
             } else {
@@ -401,6 +501,91 @@ class Carousel {
 }
 
 
+class BottomSlider {
+    
+    constructor() {
+        this.bottomSlideE = document.getElementById('bottom-slide-banner-container');
+        getSrc('json/bottom-slide.json').then(bottomSlideSrc => this.init(bottomSlideSrc));
+    }
+
+    init(bottomSlideSrc) {
+        
+        this.bottomSlideE.innerHTML = this.createBottomSlide(bottomSlideSrc);
+        
+        this.bottomSlidePaginationButtons = document.getElementsByClassName('bottom-slide-pagination-button');
+        this.bottomSlideLeftButton = document.getElementById('bottom-slider-left');
+        this.bottomSlideRightButton = document.getElementById('bottom-slider-right');
+        
+        this.bottomCurrentI = 0;
+
+        for (let button of this.bottomSlidePaginationButtons) {
+            button.addEventListener('click', () => this.bottomSlideMove(button.dataset.index));
+        }
+        this.bottomSlideLeftButton.addEventListener('click', () => this.bottomSlideMove(this.bottomCurrentI - 1));
+        this.bottomSlideRightButton.addEventListener('click', () => this.bottomSlideMove(this.bottomCurrentI + 1));
+    }
+
+    createBottomSlide(list) {
+        const temp = [];
+        
+        for (let item of list) {
+            const slideBannerString = `
+                <div class="bottom-slide-banner-wrapper">
+                    <div class="bottom-slide-banner">
+                        <div class="container">
+                            <div class="bottom-slide-words">
+                                <div class="bottom-slide-title" style="color:${item.color}">
+                                    ${item.title}
+                                </div>
+                                <a href="" class="bottom-slide-a-button">
+                                    ${item.buttonContent}
+                                </a>
+                            </div>
+                        </div>
+                        <img src="${item.imgUrl}" alt="">
+                    </div>
+                </div>`
+                
+            temp.push(slideBannerString);
+        }
+    
+        return temp.join('');
+    }
+
+    bottomSlideMove(tI) {
+
+        const bottomSlidePaginationButtons = document.getElementsByClassName('bottom-slide-pagination-button');
+        for (let button of bottomSlidePaginationButtons) {
+            if (button.classList.contains('on')) {
+                button.classList.remove('on');
+                bottomSlidePaginationButtons[tI].classList.add('on');
+                break;
+            }
+        }
+    
+        const bottomSlideE = document.getElementById('bottom-slide-banner-container');
+        const bottomSlideBanners = document.getElementsByClassName('bottom-slide-banner-wrapper');
+        bottomSlideE.scrollTo({left: bottomSlideBanners[tI].offsetLeft, behavior:"smooth"});
+    
+        const bottomSlideLeftButton = document.getElementById('bottom-slider-left');
+        const bottomSlideRightButton = document.getElementById('bottom-slider-right');
+        if (tI == 0) {
+            bottomSlideLeftButton.disabled = true;
+            bottomSlideRightButton.disabled = false;
+        } else if (tI == 3) {
+            bottomSlideRightButton.disabled = true;
+            bottomSlideLeftButton.disabled = false;
+        } else {
+            bottomSlideLeftButton.disabled = false;
+            bottomSlideRightButton.disabled = false;
+        }
+    
+        this.bottomCurrentI = tI;
+    
+    }
+}
+
+
 async function getSrc(url) {
     try {
         const response = await fetch(url);
@@ -413,9 +598,6 @@ async function getSrc(url) {
         throw new Error(error.message);
     }
 }
-
-
-
 
 
 function cartRadioHandler() {
@@ -449,93 +631,6 @@ function userInfoMoreHandler(e) {
     userInfoList.scrollTop = userInfoList.scrollHeight;
 }
 
-function createMainSlide(list) {
-    const temp = [];
-    let firstResult;
-    let lastResult;
-
-    for (let i = 0; i < list.length; i++) {
-        const item = list[i];
-
-        const tags = item.tags.map(tag => `<span class="main-slide-tag" style="background: ${item.tagBackground}; color: ${item.tagFontColor}">${tag}</span>`).join('');
-
-        const result = `
-            <div class="main-slide-banner-wrapper w${item.index}" style="background:${item.color}">
-                <div class="main-slide-banner">
-                    <div class="main-slide-words" style="color: ${item.fontColor}">
-                        <div class="main-slide-tag-wrapper">
-                            ${tags}
-                        </div>
-                        <div class="main-slide-title">
-                            ${item.title}
-                        </div>
-                        <div class="main-slide-description">
-                            ${item.description}
-                        </div>
-                    </div>
-                    <img src="${item.imgurl}" class="main-slide-image"></img>
-                </div>
-            </div>`;
-        if (i === 0) {
-            firstResult = result;
-        } else if (i === list.length - 1) {
-            lastResult = result;
-        }
-        temp.push(result);
-    }
-    temp.unshift(lastResult);
-    temp.push(firstResult);
-    return temp.join('');
-}
-
-
-function createBottomSlide(list) {
-    const temp = [];
-    
-    for (let item of list) {
-        const slideBannerString = `
-            <div class="bottom-slide-banner-wrapper">
-                <div class="bottom-slide-banner">
-                    <div class="container">
-                        <div class="bottom-slide-words">
-                            <div class="bottom-slide-title" style="color:${item.color}">
-                                ${item.title}
-                            </div>
-                            <a href="" class="bottom-slide-a-button">
-                                ${item.buttonContent}
-                            </a>
-                        </div>
-                    </div>
-                    <img src="${item.imgUrl}" alt="">
-                </div>
-            </div>`
-            
-        temp.push(slideBannerString);
-    }
-
-    return temp.join('');
-}
-
-function createPaginationButton(list) {
-    list = list.map(item => `<div class="pagination-button" data-index="${item.index}">${item.keyword}</div>`);
-    return list.join('');
-}
-
-function paginationDropToggle(e) {
-    const button = e.currentTarget;
-    if (!button.classList.contains('open')) {
-        button.classList.add('open');
-    } else {
-        button.classList.remove('open');
-    }
-}
-
-function closePaginationDrop() {
-    const button = document.getElementById('pagination-drop-button');
-    if (button.classList.contains('open')) {
-        button.classList.remove('open');
-    }
-}
 
 function searchInfoFocus(e) {
     const input = e.currentTarget;
@@ -552,47 +647,6 @@ function searchInfoBlur(e) {
 }
 
 
-
-function bottomSlideMove(tI) {
-
-    const bottomSlidePaginationButtons = document.getElementsByClassName('bottom-slide-pagination-button');
-    for (let button of bottomSlidePaginationButtons) {
-        if (button.classList.contains('on')) {
-            button.classList.remove('on');
-            bottomSlidePaginationButtons[tI].classList.add('on');
-            break;
-        }
-    }
-
-    const bottomSlideE = document.getElementById('bottom-slide-banner-container');
-    const bottomSlideBanners = document.getElementsByClassName('bottom-slide-banner-wrapper');
-    bottomSlideE.scrollTo({left: bottomSlideBanners[tI].offsetLeft, behavior:"smooth"});
-
-    const bottomSlideLeftButton = document.getElementById('bottom-slider-left');
-    const bottomSlideRightButton = document.getElementById('bottom-slider-right');
-    if (tI == 0) {
-        bottomSlideLeftButton.disabled = true;
-        bottomSlideRightButton.disabled = false;
-    } else if (tI == 3) {
-        bottomSlideRightButton.disabled = true;
-        bottomSlideLeftButton.disabled = false;
-    } else {
-        bottomSlideLeftButton.disabled = false;
-        bottomSlideRightButton.disabled = false;
-    }
-
-    bottomCurrentI = tI;
-
-}
-
-
-
-
-
-//global var
-let bottomCurrentI = 0;
-
-
 async function main() {
 
     const cartLables = document.getElementsByName('cart');
@@ -604,64 +658,12 @@ async function main() {
     userInfoMoreButton.addEventListener('click', userInfoMoreHandler);
 
 
-
-
-    // Main Slider
-
-    const mainSlideSrc = await getSrc('json/main-slide-show.json');
-    const mainSlideShowE = document.getElementById('main-slide-show');
-    mainSlideShowE.innerHTML = createMainSlide(mainSlideSrc);
-
-    const paginationButtonE = document.getElementById('pagination-button-content');
-    paginationButtonE.innerHTML = createPaginationButton(mainSlideSrc);
-
-    const paginationDropMenuE = document.getElementById('pagination-drop-menu-bottom');
-    paginationDropMenuE.innerHTML = createPaginationButton(mainSlideSrc);
-
-    const paginationDropButton = document.getElementById('pagination-drop-button');
-    paginationDropButton.addEventListener('click', paginationDropToggle);
-    const paginationDropCloseButton = document.querySelector('#pagination-drop-menu-top span:last-child');
-    paginationDropCloseButton.addEventListener('click', closePaginationDrop);
-
-    const slider = document.getElementById('main-slide-show');
-    const wrappers = document.getElementsByClassName('main-slide-banner-wrapper');
-    slider.scrollTo(wrappers[1].offsetLeft, 0);
-
-    const paginationButtons1 = document.querySelectorAll('#pagination-button-content .pagination-button');
-    const paginationButtons2 = document.querySelectorAll('#pagination-drop-menu-bottom .pagination-button');
+    // Main Slider    
     
-    paginationButtons1[0].classList.add('show');
-    paginationButtons2[0].classList.add('show');
+    const mainSlider = new MainSlider();
+   
 
-    const allPages = document.getElementById('allpages');
-    allPages.textContent = paginationButtons1.length;
-
-    const slideLeftButton = document.getElementById('slide-left-button');
-    const slideRightButton = document.getElementById('slide-right-button');
-
-    const pauseButton = document.getElementsByClassName('fas fa-pause')[0];
-    const playButton = document.getElementsByClassName('fas fa-play')[0];
-
-    const mainSlider = new MainSlider(
-        document.getElementById('main-slide-show'),
-        document.querySelectorAll('#pagination-button-content .pagination-button'),
-        document.querySelectorAll('#pagination-drop-menu-bottom .pagination-button'),
-        document.getElementsByClassName('main-slide-banner-wrapper'),
-        document.getElementById('page-now'),
-        document.getElementsByClassName('fas fa-pause')[0],
-        document.getElementsByClassName('fas fa-play')[0],
-    );
-
-    slideLeftButton.addEventListener('click', () => mainSlider.slidePrev());
-    slideRightButton.addEventListener('click', () => mainSlider.slideNext());
-    pauseButton.addEventListener('click', () => mainSlider.pauseToggle());
-    playButton.addEventListener('click', () => mainSlider.pauseToggle());
-
-    for (let button of [...paginationButtons1, ...paginationButtons2]) {
-        button.addEventListener('click', () => mainSlider.slideTo(Number(button.dataset.index)));
-    }
-
-
+    //input section
 
     const inputTitle = document.getElementById('input-title');
     const inputTitleContent = await getSrc('json/input-title.json');
@@ -673,48 +675,26 @@ async function main() {
     searchInfo.addEventListener('blur', searchInfoBlur);
 
 
-
-
     // bottom slide
 
-    const bottomSlideE = document.getElementById('bottom-slide-banner-container');
-    const bottomSlideSrc = await getSrc('json/bottom-slide.json');
-    bottomSlideE.innerHTML = createBottomSlide(bottomSlideSrc);
-
-    const bottomSlidePaginationButtons = document.getElementsByClassName('bottom-slide-pagination-button');
-    const bottomSlideLeftButton = document.getElementById('bottom-slider-left');
-    const bottomSlideRightButton = document.getElementById('bottom-slider-right');
-    
-    for (let button of bottomSlidePaginationButtons) {
-        button.addEventListener('click', () => bottomSlideMove(button.dataset.index));
-    }
-    bottomSlideLeftButton.addEventListener('click', () => bottomSlideMove(bottomCurrentI - 1));
-    bottomSlideRightButton.addEventListener('click', () => bottomSlideMove(bottomCurrentI + 1));
+    const bottomSlider = new BottomSlider();
 
 
-
-
-
+    // carouselSections
 
     const carouselSectionSrc = await getSrc('json/carousel-list.json');
     const carouselSections = [];
     for (let obj of carouselSectionSrc) {
         const newSection = new CarouselSection(obj);
         carouselSections.push(newSection);
-        console.log(carouselSections);
     }
 
-
-
-
-    // window.addEventListener('resize', () => {
-    //     for (let section of carouselSections) {
-    //         console.log(section);
-    //         section.relatedToWindowSize();
-    //     }
-    // });
+    window.addEventListener('resize', () => {
+        for (let section of carouselSections) {
+            section.relatedToWindowSize();
+        }
+    });
     
-
 }
 
 main();
