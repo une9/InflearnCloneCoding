@@ -2,7 +2,10 @@ class MainSlider {
 
     constructor() {
         this.mainSlideShowE = document.getElementById('main-slide-show');
-        getSrc('json/main-slide-show.json').then(mainSlideSrc => this.init(mainSlideSrc));
+        getSrc('json/main-slide-show.json').then(mainSlideSrc => {
+            this.mainSlideSrc = mainSlideSrc;
+            this.init(mainSlideSrc);
+        });
     }
 
     init(mainSlideSrc) {
@@ -763,14 +766,6 @@ function mediaqueryFunc() {
         })
     }
 
-   
-    if (smallWindow.matches) {
-       
-
-    }
-
-   
-
 }
 
 
@@ -788,7 +783,6 @@ async function main() {
     // media query
 
     mediaqueryFunc();
-    
 
 
     // Main Slider    
@@ -822,7 +816,12 @@ async function main() {
         carouselSections.push(newSection);
     }
 
-    window.addEventListener('resize', () => window.location.reload());
+    window.addEventListener('resize', () => {
+        mainSlider.init(mainSlider.mainSlideSrc);
+        for (let section of carouselSections) {
+            section.relatedToWindowSize();
+        }
+    });
 
 }
 
