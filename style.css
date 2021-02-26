@@ -1879,7 +1879,7 @@ header nav #nav-bar-menu #nav-bar-class > i.fa-chevron-down {
   header nav #nav-bar-menu #mobile-menu-wrapper .class-menu-depth-3 {
     position: static;
     display: block;
-    max-height: 0px;
+    max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s;
     width: 100%;
@@ -1892,8 +1892,7 @@ header nav #nav-bar-menu #nav-bar-class > i.fa-chevron-down {
     padding: 0.75rem;
     background: #F6F6F6;
   }
-  header nav #nav-bar-menu #mobile-menu-wrapper .class-menu-depth-2 > li:hover > ul {
-    max-height: 200px;
+  header nav #nav-bar-menu #mobile-menu-wrapper .class-menu-depth-3.show {
     transition: max-height 0.3s;
   }
   header nav #nav-bar-menu #class-menu-depth-1 {
@@ -2104,7 +2103,6 @@ header nav #nav-bar-menu #nav-bar-class > i.fa-chevron-down {
     padding: 0 16px;
   }
   footer #footer-content-container .footer-content-column.show {
-    max-height: 100%;
     transition: max-height 0.3s;
   }
   footer #footer-content-container .footer-content-column.show h5 i {
@@ -2117,7 +2115,7 @@ footer #footer-content-container .footer-content-column:nth-child(5) {
   footer #footer-bottom {
     text-align: center;
     height: 124px;
-    margin-bottom: 48px;
+    margin: 48px 0;
   }
   footer #footer-bottom #footer-bottom-left > div:first-child a {
     display: none;
@@ -2145,7 +2143,6 @@ footer #footer-content-container .footer-content-column:nth-child(5) {
     transition: max-height 0.3s;
   }
   footer #footer-bottom #footer-bottom-left > div:nth-child(3).show {
-    max-height: 100%;
     transition: max-height 0.3s;
   }
   footer #footer-bottom #sns-icons {

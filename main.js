@@ -653,6 +653,10 @@ function mediaqueryFunc() {
     const mobileMenuWrapper = document.getElementById('mobile-menu-wrapper');
     const mobileMenuBlack = document.getElementById('mobile-menu-black');
 
+    const classMenuD1Lis = document.querySelectorAll('#class-menu-depth-1 > li');
+    const classMenuD2s = document.querySelectorAll('.class-menu-depth-2');
+    // const classMenuD3 = document.querySelectorAll('.class-menu-depth-3');
+
     const userIcon = document.getElementById('user-info-wrapper');
     const userDropMenu = document.getElementById('user-drop-menu');
     const userMenuBlack = document.getElementById('user-info-black');
@@ -698,8 +702,34 @@ function mediaqueryFunc() {
             e.stopPropagation();
         })
 
+        for (let li of classMenuD1Lis) {
+            const thisClassMenuD2 = li.getElementsByClassName('class-menu-depth-2')[0];
+            li.addEventListener('click', () => {
+                for (let d2 of classMenuD2s) {
+                    if (d2.style.display === 'block') {
+                        d2.removeAttribute('style');
+                        break;
+                    }
+                }
+                thisClassMenuD2.style.display = 'block';
+            })
+        }
 
-        
+        for (let d2 of classMenuD2s) {
+            const classMenuD2Lis = d2.getElementsByTagName('li');
+            for (d2Li of classMenuD2Lis) {
+                const classMenud3 = d2Li.getElementsByClassName('class-menu-depth-3')[0];
+                d2Li.addEventListener('click', () => {
+                    if (!classMenud3.classList.contains('show')) {
+                        classMenud3.classList.add('show');
+                        classMenud3.style.maxHeight = `${classMenud3.scrollHeight}px`;
+                    } else {
+                        classMenud3.classList.remove('show');
+                        classMenud3.removeAttribute('style');
+                    }
+                })
+            }
+        }
 
     }
 
@@ -713,15 +743,23 @@ function mediaqueryFunc() {
             title.addEventListener('click', () => {
                 if (!column.classList.contains('show')) {
                     column.classList.add('show');
+                    column.style.maxHeight = `${column.scrollHeight}px`;
                 } else {
                     column.classList.remove('show');
+                    column.removeAttribute('style');
                 }
             })
         }
 
         footerInfoTitle.innerHTML += '<i class="lnr lnr-chevron-down"></i>';
         footerInfoTitle.addEventListener('click', () => {
-            footerInfo.classList.toggle('show');
+            if (!footerInfo.classList.contains('show')) {
+                footerInfo.classList.add('show');
+                footerInfo.style.maxHeight = `${footerInfo.scrollHeight}px`;
+            } else {
+                footerInfo.classList.remove('show');
+                footerInfo.removeAttribute('style');
+            }
         })
     }
 
