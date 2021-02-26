@@ -87,8 +87,6 @@ class MainSlider {
         }
     }
 
-
-
     createMainSlide(list) {
         const temp = [];
         let firstResult;
@@ -647,49 +645,94 @@ function searchInfoBlur(e) {
 }
 
 function mediaqueryFunc() {
-    const mediumWindow = matchMedia("screen and (max-width: 1024px)");
-    const smallWindow = matchMedia("screen and (max-width: 768px)");
+    const largeWindow = matchMedia("screen and (max-width: 1024px)");
+    const mediumWindow = matchMedia("screen and (max-width: 768px)");
+    const smallWindow = matchMedia("screen and (max-width: 480px)");
 
     const mobileMenuIcon = document.getElementById('mobile-menu-icon');
     const mobileMenuWrapper = document.getElementById('mobile-menu-wrapper');
+    const mobileMenuBlack = document.getElementById('mobile-menu-black');
 
     const userIcon = document.getElementById('user-info-wrapper');
     const userDropMenu = document.getElementById('user-drop-menu');
+    const userMenuBlack = document.getElementById('user-info-black');
 
     const body = document.getElementsByTagName('body')[0];
-    const black = document.getElementById('black');
+
+    const footerContentColumns = document.querySelectorAll('footer .footer-content-column');
+    const footerInfoTitle = document.querySelector('footer #footer-bottom-left div:nth-child(2)');
+    const footerInfo = document.querySelector('footer #footer-bottom-left div:nth-child(3)');
 
 
-    mobileMenuIcon.addEventListener('click', () => {
-        if (!mobileMenuWrapper.classList.contains('show') && mediumWindow.matches) {
-            mobileMenuWrapper.classList.add('show');
-            // black.classList.add('show');
-            body.style.height = '100vh';
-            body.style.overflow = 'hidden';
-        }
-    })
+    if (largeWindow.matches) {
 
-    userIcon.addEventListener('click', () => {
-        if (!userDropMenu.classList.contains('show') && mediumWindow.matches) {
-            userDropMenu.classList.add('show');
-            // black.classList.add('show');
-            // black.style.left = '0';
-            // black.style.width = 'calc(100% - 316px)';
-        }
-    })
+        // mobile menu click event
+
+        mobileMenuIcon.addEventListener('click', () => {
+            if (!mobileMenuWrapper.classList.contains('show') && !userDropMenu.classList.contains('show')) {
+                mobileMenuBlack.classList.add('showBlack');
+                mobileMenuWrapper.classList.add('show');
+                body.style.height = '100vh';
+                body.style.overflow = 'hidden';
+            }
+        })
     
-    if (smallWindow.matches) {
+        userIcon.addEventListener('click', () => {
+            if (!userDropMenu.classList.contains('show') && !mobileMenuWrapper.classList.contains('show')) {
+                userMenuBlack.classList.add('showBlack');
+                userDropMenu.classList.add('show');
+            }
+        })
+    
+        userMenuBlack.addEventListener('click', (e) => {
+            userMenuBlack.classList.remove('showBlack');
+            userDropMenu.classList.remove('show');
+            body.removeAttribute('style');
+            e.stopPropagation();
+        })
+    
+        mobileMenuBlack.addEventListener('click', (e) => {
+            mobileMenuBlack.classList.remove('showBlack');
+            mobileMenuWrapper.classList.remove('show');
+            body.removeAttribute('style');
+            e.stopPropagation();
+        })
+
+
+        
 
     }
 
-    black.addEventListener('click', () => {
-        mobileMenuWrapper.classList.remove('show');
-        userDropMenu.classList.remove('show');
-        // black.classList.remove('show');
-        
-        // black.removeAttribute('style');
-        body.removeAttribute('style');
-    })
+    if (mediumWindow.matches) {
+        // mobile footer click event
+
+        for (let column of footerContentColumns) {
+            const title = column.getElementsByTagName('h5')[0];
+            const ul = column.getElementsByTagName('ul')[0];
+            title.innerHTML += '<i class="lnr lnr-chevron-down"></i>';
+            title.addEventListener('click', () => {
+                if (!column.classList.contains('show')) {
+                    column.classList.add('show');
+                } else {
+                    column.classList.remove('show');
+                }
+            })
+        }
+
+        footerInfoTitle.innerHTML += '<i class="lnr lnr-chevron-down"></i>';
+        footerInfoTitle.addEventListener('click', () => {
+            footerInfo.classList.toggle('show');
+        })
+    }
+
+   
+    if (smallWindow.matches) {
+       
+
+    }
+
+   
+
 }
 
 
@@ -741,14 +784,7 @@ async function main() {
         carouselSections.push(newSection);
     }
 
-    window.addEventListener('resize', () => {
-
-        for (let section of carouselSections) {
-            section.relatedToWindowSize();
-        }
-
-        mediaqueryFunc()
-    });
+    window.addEventListener('resize', () => window.location.reload());
 
 }
 
