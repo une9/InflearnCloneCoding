@@ -650,7 +650,7 @@ function searchInfoBlur(e) {
 function mediaqueryFunc() {
     const largeWindow = matchMedia("screen and (max-width: 1024px)");
     const mediumWindow = matchMedia("screen and (max-width: 768px)");
-    const smallWindow = matchMedia("screen and (max-width: 480px)");
+    // const smallWindow = matchMedia("screen and (max-width: 480px)");
 
     const mobileMenuIcon = document.getElementById('mobile-menu-icon');
     const mobileMenuWrapper = document.getElementById('mobile-menu-wrapper');
@@ -741,8 +741,7 @@ function mediaqueryFunc() {
 
         for (let column of footerContentColumns) {
             const title = column.getElementsByTagName('h5')[0];
-            const ul = column.getElementsByTagName('ul')[0];
-            title.innerHTML += '<i class="lnr lnr-chevron-down"></i>';
+            console.log(title);
             title.addEventListener('click', () => {
                 if (!column.classList.contains('show')) {
                     column.classList.add('show');
@@ -754,7 +753,6 @@ function mediaqueryFunc() {
             })
         }
 
-        footerInfoTitle.innerHTML += '<i class="lnr lnr-chevron-down"></i>';
         footerInfoTitle.addEventListener('click', () => {
             if (!footerInfo.classList.contains('show')) {
                 footerInfo.classList.add('show');
