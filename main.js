@@ -650,7 +650,6 @@ function searchInfoBlur(e) {
 function mediaqueryFunc() {
     const largeWindow = matchMedia("screen and (max-width: 1024px)");
     const mediumWindow = matchMedia("screen and (max-width: 768px)");
-    // const smallWindow = matchMedia("screen and (max-width: 480px)");
 
     const mobileMenuIcon = document.getElementById('mobile-menu-icon');
     const mobileMenuWrapper = document.getElementById('mobile-menu-wrapper');
@@ -658,7 +657,6 @@ function mediaqueryFunc() {
 
     const classMenuD1Lis = document.querySelectorAll('#class-menu-depth-1 > li');
     const classMenuD2s = document.querySelectorAll('.class-menu-depth-2');
-    // const classMenuD3 = document.querySelectorAll('.class-menu-depth-3');
 
     const userIcon = document.getElementById('user-info-wrapper');
     const userDropMenu = document.getElementById('user-drop-menu');
@@ -719,7 +717,7 @@ function mediaqueryFunc() {
         }
 
         for (let d2 of classMenuD2s) {
-            const classMenuD2Lis = d2.getElementsByTagName('li');
+            const classMenuD2Lis = d2.querySelectorAll('.class-menu-depth-2 > li');
             for (d2Li of classMenuD2Lis) {
                 const classMenud3 = d2Li.getElementsByClassName('class-menu-depth-3')[0];
                 d2Li.addEventListener('click', () => {
@@ -741,7 +739,6 @@ function mediaqueryFunc() {
 
         for (let column of footerContentColumns) {
             const title = column.getElementsByTagName('h5')[0];
-            console.log(title);
             title.addEventListener('click', () => {
                 if (!column.classList.contains('show')) {
                     column.classList.add('show');
